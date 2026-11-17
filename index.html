@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyDaily — Personal Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="app">
+
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-icon">📅</span>
+        <span class="brand-name">MyDaily</span>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-link active" data-page="dashboard">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-text">Dashboard</span>
+        </button>
+        <button class="nav-link" data-page="jadwal">
+          <span class="nav-icon">✅</span>
+          <span class="nav-text">Jadwal</span>
+        </button>
+        <button class="nav-link" data-page="keuangan">
+          <span class="nav-icon">💰</span>
+          <span class="nav-text">Keuangan</span>
+        </button>
+        <button class="nav-link" data-page="laporan">
+          <span class="nav-icon">📊</span>
+          <span class="nav-text">Laporan</span>
+        </button>
+      </nav>
+    </aside>
+
+    <main class="content">
+
+                  <section id="page-dashboard" class="page active">
+
+        <div class="dash-header">
+          <div>
+            <h1 id="greeting">Selamat datang!</h1>
+            <p class="dash-date" id="today-date">Memuat tanggal...</p>
+          </div>
+          <div class="clock" id="clock">00.00.00</div>
+        </div>
+
+        <h2 class="section-title">Tugas Hari Ini</h2>
+        <div class="card-grid">
+          <div class="card">
+            <p class="card-label">Total tugas</p>
+            <p class="card-value" id="task-total">0</p>
+          </div>
+          <div class="card">
+            <p class="card-label">Selesai</p>
+            <p class="card-value text-success" id="task-done">0</p>
+          </div>
+          <div class="card">
+            <p class="card-label">Belum selesai</p>
+            <p class="card-value text-danger" id="task-pending">0</p>
+          </div>
+        </div>
+
+        <h2 class="section-title">Keuangan Bulan Ini</h2>
+        <div class="card-grid">
+          <div class="card">
+            <p class="card-label">Pemasukan</p>
+            <p class="card-value text-success" id="income-total">Rp 0</p>
+          </div>
+          <div class="card">
+            <p class="card-label">Pengeluaran</p>
+            <p class="card-value text-danger" id="expense-total">Rp 0</p>
+          </div>
+          <div class="card">
+            <p class="card-label">Saldo bersih</p>
+            <p class="card-value" id="balance-total">Rp 0</p>
+          </div>
+        </div>
+
+        <h2 class="section-title">Menu Cepat</h2>
+        <div class="card-grid">
+          <button class="card quick-link" data-goto="jadwal">
+            <span class="quick-icon">✅</span>
+            <span>
+              <span class="quick-title">Buka Jadwal</span>
+              <span class="quick-desc">Atur kegiatan harian</span>
+            </span>
+          </button>
+          <button class="card quick-link" data-goto="keuangan">
+            <span class="quick-icon">💰</span>
+            <span>
+              <span class="quick-title">Buka Keuangan</span>
+              <span class="quick-desc">Catat pemasukan dan pengeluaran</span>
+            </span>
+          </button>
+        </div>
+        
+        <h2 class="section-title">Data &amp; Cadangan</h2>
+        <div class="card card-static">
+          <p class="data-info" id="data-info"></p>
+          <p class="data-help">
+            Data hanya tersimpan di browser ini. Unduh cadangan secara berkala agar datamu aman
+            jika data browser terhapus.
+          </p>
+
+          <div class="data-actions">
+            <button type="button" class="btn btn-primary" id="data-export">⬇️ Unduh Cadangan</button>
+            <button type="button" class="btn btn-secondary" id="data-import">⬆️ Pulihkan dari File</button>
+            <button type="button" class="btn btn-danger" id="data-reset">🗑️ Hapus Semua Data</button>
+          </div>
+
+          <input type="file" id="data-import-file" accept=".json,application/json" hidden>
+        </div>
+
+      </section>
+
+                  <section id="page-jadwal" class="page">
+        <h1>Jadwal</h1>
+        <p>Atur kegiatan harianmu dan tandai yang sudah selesai.</p>
+
+        <div class="card card-static calendar-card">
+          <div class="calendar-header">
+            <h2 class="calendar-title" id="cal-title">Bulan Tahun</h2>
+            <div class="calendar-nav">
+              <button type="button" class="btn-icon" id="cal-prev" title="Bulan sebelumnya">◀</button>
+              <button type="button" class="btn btn-secondary btn-small" id="cal-today">Hari ini</button>
+              <button type="button" class="btn-icon" id="cal-next" title="Bulan berikutnya">▶</button>
+            </div>
+          </div>
+
+          <div class="calendar-weekdays">
+            <span>Sen</span>
+            <span>Sel</span>
+            <span>Rab</span>
+            <span>Kam</span>
+            <span>Jum</span>
+            <span>Sab</span>
+            <span>Min</span>
+          </div>
+
+          <div class="calendar-grid" id="cal-grid"></div>
+
+          <div class="calendar-legend">
+            <span><i class="dot dot-pending"></i> Belum selesai</span>
+            <span><i class="dot dot-done"></i> Selesai</span>
+            <span><i class="dot dot-overdue"></i> Terlambat</span>
+          </div>
+        </div>
+
+        <form id="task-form" class="card card-static form-card">
+          <h2 class="form-title" id="form-title">Tambah Tugas Baru</h2>
+
+          <div class="form-grid">
+            <div class="form-group full">
+              <label for="task-title-input">Nama kegiatan</label>
+              <input type="text" id="task-title-input" placeholder="Contoh: Belajar JavaScript" required>
+            </div>
+
+            <div class="form-group full">
+              <label for="task-description">Deskripsi (opsional)</label>
+              <textarea id="task-description" placeholder="Catatan tambahan..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="task-date">Tanggal</label>
+              <input type="date" id="task-date" required>
+            </div>
+
+            <div class="form-group">
+              <label for="task-time">Waktu</label>
+              <input type="time" id="task-time" required>
+            </div>
+
+            <div class="form-group">
+              <label for="task-priority">Prioritas</label>
+              <select id="task-priority">
+                <option value="rendah">Rendah</option>
+                <option value="sedang" selected>Sedang</option>
+                <option value="tinggi">Tinggi</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="btn-submit">Tambah Tugas</button>
+            <button type="button" class="btn btn-secondary" id="btn-cancel" hidden>Batal</button>
+          </div>
+        </form>
+
+        <h2 class="section-title" id="list-title">Daftar Tugas</h2>
+
+        <div class="filter-bar">
+          <div class="form-group">
+            <label for="filter-date">Tanggal</label>
+            <input type="date" id="filter-date">
+          </div>
+
+          <div class="form-group">
+            <label for="filter-status">Status</label>
+            <select id="filter-status">
+              <option value="all">Semua</option>
+              <option value="pending">Belum selesai</option>
+              <option value="done">Selesai</option>
+              <option value="overdue">Terlambat</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="filter-priority">Prioritas</label>
+            <select id="filter-priority">
+              <option value="all">Semua</option>
+              <option value="tinggi">Tinggi</option>
+              <option value="sedang">Sedang</option>
+              <option value="rendah">Rendah</option>
+            </select>
+          </div>
+
+          <button type="button" class="btn btn-secondary" id="filter-reset">Reset filter</button>
+        </div>
+
+        <div class="task-list" id="task-list"></div>
+      </section>
+
+                  <section id="page-keuangan" class="page">
+        <h1>Keuangan</h1>
+        <p>Catat pemasukan dan pengeluaranmu di sini.</p>
+        
+        <div class="card-grid">
+          <div class="card balance-card">
+            <p class="card-label">Sisa uang</p>
+            <p class="card-value" id="money-left">Rp 0</p>
+          </div>
+          <div class="card">
+            <p class="card-label">Total pemasukan</p>
+            <p class="card-value text-success" id="money-income-all">Rp 0</p>
+          </div>
+          <div class="card">
+            <p class="card-label">Total pengeluaran</p>
+            <p class="card-value text-danger" id="money-expense-all">Rp 0</p>
+          </div>
+        </div>
+
+        <form id="trx-form" class="card card-static form-card">
+          <h2 class="form-title" id="trx-form-title">Tambah Transaksi</h2>
+
+          <div class="type-toggle">
+            <label class="type-option">
+              <input type="radio" name="trx-type" value="income" checked>
+              <span class="type-label type-income">➕ Pemasukan</span>
+            </label>
+            <label class="type-option">
+              <input type="radio" name="trx-type" value="expense">
+              <span class="type-label type-expense">➖ Pengeluaran</span>
+            </label>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group full">
+              <label for="trx-title">Nama / keterangan</label>
+              <input type="text" id="trx-title" placeholder="Contoh: Uang saku mingguan" required>
+            </div>
+
+            <div class="form-group">
+              <label for="trx-amount">Nominal (Rp)</label>
+              <input type="number" id="trx-amount" min="1" step="1" inputmode="numeric" placeholder="50000" required>
+            </div>
+
+            <div class="form-group">
+              <label for="trx-category">Kategori</label>
+              <select id="trx-category"></select>
+            </div>
+
+            <div class="form-group">
+              <label for="trx-date">Tanggal</label>
+              <input type="date" id="trx-date" required>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="trx-submit">Simpan Transaksi</button>
+            <button type="button" class="btn btn-secondary" id="trx-cancel" hidden>Batal</button>
+          </div>
+        </form>
+
+        <h2 class="section-title">Riwayat Transaksi</h2>
+
+        <div class="filter-bar">
+          <div class="form-group">
+            <label for="trx-filter-month">Bulan</label>
+            <input type="month" id="trx-filter-month">
+          </div>
+
+          <div class="form-group">
+            <label for="trx-filter-date">Tanggal</label>
+            <input type="date" id="trx-filter-date">
+          </div>
+
+          <div class="form-group">
+            <label for="trx-filter-type">Jenis</label>
+            <select id="trx-filter-type">
+              <option value="all">Semua</option>
+              <option value="income">Pemasukan</option>
+              <option value="expense">Pengeluaran</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="trx-filter-category">Kategori</label>
+            <select id="trx-filter-category"></select>
+          </div>
+
+          <button type="button" class="btn btn-secondary" id="trx-filter-reset">Reset filter</button>
+        </div>
+
+        <p class="filter-summary" id="trx-summary"></p>
+
+        <div class="trx-list" id="trx-list"></div>
+      </section>
+
+            <section id="page-laporan" class="page">
+        <h1>Laporan</h1>
+        <p>Lihat rekap keuangan per bulan.</p>
+
+                <div class="report-controls">
+          <div class="form-group">
+            <label for="report-month">Bulan</label>
+            <select id="report-month"></select>
+          </div>
+
+          <div class="form-group">
+            <label for="report-year">Tahun</label>
+            <select id="report-year"></select>
+          </div>
+
+          <button type="button" class="btn btn-primary" id="report-csv">⬇️ Unduh CSV</button>
+        </div>
+        
+                <h2 class="section-title" id="report-chart-title">Perbandingan per Bulan</h2>
+        <div class="card card-static">
+          <p class="chart-note" id="report-chart-note"></p>
+
+          <div class="bar-chart-scroll">
+            <div class="bar-chart" id="report-bar-chart"></div>
+          </div>
+
+          <div class="calendar-legend">
+            <span><i class="legend-color swatch-income"></i> Pemasukan</span>
+            <span><i class="legend-color swatch-expense"></i> Pengeluaran</span>
+          </div>
+        </div>
+
+        <h2 class="section-title" id="report-table-title">Rekap Tahunan</h2>
+        <div class="card card-static table-card">
+          <div class="table-scroll">
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>Bulan</th>
+                  <th class="num">Pemasukan</th>
+                  <th class="num">Pengeluaran</th>
+                  <th class="num">Selisih</th>
+                </tr>
+              </thead>
+              <tbody id="report-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <h2 class="section-title" id="report-heading">Ringkasan</h2>
+        
+        <div class="card-grid">
+          <div class="card">
+            <p class="card-label">Total pemasukan</p>
+            <p class="card-value text-success" id="report-income">Rp 0</p>
+          </div>
+          <div class="card">
+            <p class="card-label">Total pengeluaran</p>
+            <p class="card-value text-danger" id="report-expense">Rp 0</p>
+          </div>
+          <div class="card">
+            <p class="card-label">Selisih (saldo bersih)</p>
+            <p class="card-value" id="report-balance">Rp 0</p>
+          </div>
+        </div>
+
+        <h2 class="section-title">Pengeluaran per Kategori</h2>
+        <div class="card card-static category-card">
+          <div class="donut-wrap">
+            <div class="donut" id="report-donut"></div>
+            <ul class="category-legend" id="report-legend"></ul>
+          </div>
+        </div>
+
+        <h2 class="section-title" id="report-history-title">Riwayat Transaksi</h2>
+        <div class="trx-list" id="report-trx-list"></div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <script src="js/helpers.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/jadwal.js"></script>
+  <script src="js/kalender.js"></script>
+  <script src="js/keuangan.js"></script>
+  <script src="js/laporan.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
